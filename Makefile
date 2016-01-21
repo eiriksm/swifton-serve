@@ -1,4 +1,3 @@
-.PHONY: all dev
 .PHONY: all setup dev
 
 setup:
