@@ -26,7 +26,6 @@ function handleServe (req, res, next) {
   });
 
   var opts = {
-    Detach: true,
     HostConfig: {
       PublishAllPorts: true,
       Privileged: true
