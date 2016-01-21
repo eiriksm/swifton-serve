@@ -21,30 +21,58 @@ function handleServe (req, res, next) {
     'git clone ' + repository + ' app && cd app && swift build --configuration release && cd .build/release && exe=$(grep -o \'name: "[^"]*"\' ../../Package.swift | sed \'s/name: "//g\' | sed \'s/"//g\') && ./$exe'
   ];
 
-  req.swifton.docker.listContainers(function (err, containers) {
-    console.log('containers:', containers);
-  });
+  // req.swifton.docker.listContainers(function (err, containers) {
+  //   console.log('containers:', containers);
+  // });
+  //
+  // var opts = {
+  //   HostConfig: {
+  //     PublishAllPorts: true,
+  //     Privileged: true
+  //   }
+  // };
 
-  var opts = {
+  // req.swifton.docker.run('swiftdocker/swift', commands, process.stdout, opts, opts, function (err, data,container) {
+  //   console.log('data', data);
+  //   console.log('container', container);
+  //   res.json(data);
+  // })
+  // .on('stream', function (stream) {
+  //   // console.log('stream', stream);
+  //   stream.on('data', function (data) {
+  //     console.log('\nstream data >>>', data.toString(), '\n');
+  //   });
+  //   stream.on('container', function (container) {
+  //     console.log('\nstream container >>>', container.toString(), '\n');
+  //   });
+  // });
+
+  var theContainer = null;
+  req.swifton.docker.createContainerAsync({
+    Image: 'swiftdocker/swift',
+    // Cmd: commands,
     HostConfig: {
       PublishAllPorts: true,
       Privileged: true
     }
-  };
-
-  req.swifton.docker.run('swiftdocker/swift', commands, process.stdout, opts, opts, function (err, data,container) {
-    console.log('data', data);
-    console.log('container', container);
-    res.json(data);
   })
-  .on('stream', function (stream) {
-    // console.log('stream', stream);
-    stream.on('data', function (data) {
-      console.log('\nstream data >>>', data.toString(), '\n');
+  .then(function (container) {
+    console.log('CREATE CONTAINER:', container);
+    theContainer = container;
+    return Promise.promisifyAll(container).startAsync();
+  })
+  .then(function (exec) {
+    return theContainer.execAsync({
+      Cmd: commands,
+      AttachStdin: true,
+      AttachStdout: true
     });
-    stream.on('container', function (container) {
-      console.log('\nstream container >>>', container.toString(), '\n');
-    });
+  })
+  .then(function (data) {
+    console.log('CONTAINER EXEC:', exec);
+  })
+  .error(function (err) {
+    console.log('ERROR:', err);
   });
 };
 
