@@ -20,38 +20,56 @@ function handleServe (req, res, next) {
     'git clone ' + repository + ' app && cd app && swift build --configuration release && cd .build/release && exe=$(grep -o \'name: "[^"]*"\' ../../Package.swift | sed \'s/name: "//g\' | sed \'s/"//g\') && ./$exe'
   ];
 
-  req.swifton.docker.createContainer({
+  var aContainer;
+  req.swifton.docker.createContainerAsync({
     Image: 'swiftdocker/swift',
     Cmd: commands
-  }, function(err, container) {
-    container.attach({
-      stream: true,
-      stdout: true,
-      stderr: true,
-      tty: true
-    }, function(err, stream) {
-      if(err) {
-        console.log('err attach', err);
-        res.sendStatus(500);
-        return;
-      }
-      stream.pipe(process.stdout);
-
-      container.start({
-        Privileged: true
-      }, function(err, data) {
-        if(err) {
-          console.log('err start', err);
-          res.sendStatus(500);
-          return;
-        }
-        res.json({
-          success: true,
-          container_id: container.id
-        });
-      });
+  })
+  .then(function (container) {
+    aContainer = Promise.promisifyAll(container);
+    return aContainer.startAsync({
+      Privileged: true
+    });
+  })
+  .then(function (data) {
+    res.json({
+      success: true,
+      container_id: aContainer.id
     });
   });
+
+  // req.swifton.docker.createContainer({
+  //   Image: 'swiftdocker/swift',
+  //   Cmd: commands
+  // }, function(err, container) {
+  //   container.attach({
+  //     stream: true,
+  //     stdout: true,
+  //     stderr: true,
+  //     tty: true
+  //   }, function(err, stream) {
+  //     if(err) {
+  //       console.log('err attach', err);
+  //       res.sendStatus(500);
+  //       return;
+  //     }
+  //     stream.pipe(process.stdout);
+  //
+  //     container.start({
+  //       Privileged: true
+  //     }, function(err, data) {
+  //       if(err) {
+  //         console.log('err start', err);
+  //         res.sendStatus(500);
+  //         return;
+  //       }
+  //       res.json({
+  //         success: true,
+  //         container_id: container.id
+  //       });
+  //     });
+  //   });
+  // });
 
   // req.swifton.docker.createContainer({
   //   Image: 'swiftdocker/swift',
