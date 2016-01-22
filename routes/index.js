@@ -144,6 +144,11 @@ var createNginxConfig = function createNginxConfig (name, port, callback) {
         'proxy_set_header Connection "upgrade";\n' +
         'proxy_http_version 1.1;\n' +
       '}\n' +
+      'error_page 502 /serve_502.html;\n' +
+       'location = /serve_502.html {\n' +
+                'root /usr/share/nginx/html;\n' +
+                'internal;\n' +
+      '}\n' +
     '}';
     var config = format(template, {
       name: name,
