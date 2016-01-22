@@ -42,14 +42,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-// cors headers
-app.all('*', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
-
 app.use('/', routes.index);
 
 // catch 404 and forward to error handler
@@ -68,7 +60,7 @@ app.use(function(err, req, res, next) {
 
 // maintenance tasks
 // perform docker and couchdb cleanup every 30s
-var chore = new Chore(swifton, '*/30');
+var chore = new Chore(swifton, '*');
 chore.start();
 
 module.exports = app;
