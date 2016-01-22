@@ -5,16 +5,9 @@ var shortid = require('shortid');
 var Promise = require('bluebird');
 var portfinder = Promise.promisifyAll(require('portfinder'));
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.redirect('//swifton.me');
-});
-
-router.post('/', handleServe);
-
-function handleServe (req, res, next) {
+router.post('/', function (req, res, next) {
+  
   var repository = req.body.repository;
-
   var commands = [
     'bash',
     '-c',
