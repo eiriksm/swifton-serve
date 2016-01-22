@@ -63,6 +63,8 @@ router.post('/', function (req, res, next) {
   })
   .then(function (stdout) {
     return req.swifton.db.serves.saveAsync(aContainer.id, {
+      created_at: new Date(),
+      status: 'running',
       service_uri: aName + '.serve.swifton.me',
       docker_container: aContainerData,
       error: null
@@ -77,6 +79,8 @@ router.post('/', function (req, res, next) {
   })
   .error(function (err) {
     req.swifton.db.serves.saveAsync(aContainer.id ? aContainer.id : undefined, {
+      created_at: new Date(),
+      status: 'failed',
       service_uri: null,
       docker_container: null,
       error: err
@@ -85,6 +89,33 @@ router.post('/', function (req, res, next) {
       success: false,
       reason: err
     });
+  })
+});
+
+router.delete('/:containerId', function (req, res, next) {
+  var aContainerId;
+  req.swifton.db.serves.getAsync(req.params.containerId)
+  .then(function (document) {
+    aContainerId = document._id;
+    return Promise.promisifyAll(req.swifton.docker.getContainer(aContainerId)).stopAsync();
+  })
+  .then(function (result) {
+    return fs.unlinkAsync(path.join(__dirname, '../', 'vhosts', aContainerId + '.conf'));
+  })
+  .then(function () {
+    return execute('service nginx reload');
+  })
+  .then(function (result) {
+    return req.swifton.db.serves.mergeAsync(aContainerId, {
+      status: 'deleted',
+      deleted_at: new Date()
+    });
+  })
+  .then(function () {
+    res.sendStatus(200);
+  })
+  .error(function (err) {
+    res.sendStatus(500);
   })
 });
 
