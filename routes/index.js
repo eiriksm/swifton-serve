@@ -6,7 +6,7 @@ var Promise = require('bluebird');
 var portfinder = Promise.promisifyAll(require('portfinder'));
 
 router.post('/', function (req, res, next) {
-  
+
   var repository = req.body.repository;
   var commands = [
     'bash',
@@ -50,7 +50,7 @@ router.post('/', function (req, res, next) {
       container_id: aContainer.id
     });
   });
-};
+});
 
 function getFilename (req) {
   return (typeof req.params.filename !== 'undefined') ? req.params.filename + ".swift" : shortid.generate() + ".swift";
