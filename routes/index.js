@@ -3,7 +3,6 @@ var router = express.Router();
 var getRawBody = require('raw-body');
 var shortid = require('shortid');
 var Promise = require('bluebird');
-var portfinder = Promise.promisifyAll(require('portfinder'));
 
 router.post('/', function (req, res, next) {
 
@@ -15,26 +14,21 @@ router.post('/', function (req, res, next) {
   ];
 
   var aContainer;
-  var aPort;
 
-  portfinder.getPortAsync()
-  .then(function (port) {
-    aPort = port;
-    return req.swifton.docker.createContainerAsync({
-      Image: 'swiftdocker/swift',
-      Cmd: commands,
-      Detach: true,
-      HostConfig: {
-        Privileged: true,
-        PortBindings: {
-          "8000/tcp": [{ "HostPort": aPort.toString() }]
-        }
-      },
-      ExposedPorts: {
-        "8000/tcp": {}
-      },
-      Tty: true
-    })
+  return req.swifton.docker.createContainerAsync({
+    Image: 'swiftdocker/swift',
+    Cmd: commands,
+    Detach: true,
+    HostConfig: {
+      Privileged: true,
+      PortBindings: {
+        "8000/tcp": [{"HostPort": null}]
+      }
+    },
+    ExposedPorts: {
+      "8000/tcp": {}
+    },
+    Tty: true
   })
   .then(function (container) {
     aContainer = Promise.promisifyAll(container);
@@ -44,12 +38,17 @@ router.post('/', function (req, res, next) {
     return aContainer.startAsync();
   })
   .then(function (data) {
+    console.log('data1', data);
+    return aContainer.inspectAsync();
+  })
+  .then(function (data) {
+    console.log('data2', data);
+    console.log('host port:', data["NetworkSettings"]["Ports"]["8000/tcp"][0]["HostPort"]);
     res.json({
       success: true,
-      port: aPort,
       container_id: aContainer.id
     });
-  });
+  })
 });
 
 function getFilename (req) {
