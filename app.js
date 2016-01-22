@@ -60,7 +60,7 @@ app.use(function(err, req, res, next) {
 
 // maintenance tasks
 // perform docker and couchdb cleanup every 30s
-var chore = new Chore(swifton, '*');
+var chore = new Chore(swifton, '*/30');
 chore.start();
 
 module.exports = app;
