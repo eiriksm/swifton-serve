@@ -21,10 +21,6 @@ var swifton = {
   docker: Promise.promisifyAll(new Docker())
 }
 
-var Chore = require('./lib/chore');
-var chore = new Chore(swifton);
-// chore.start();
-
 var app = express();
 
 app.use(logger('dev'));
@@ -65,6 +61,9 @@ app.use(function(err, req, res, next) {
 });
 
 // maintenance tasks
-
+// perform docker and couchdb cleanup every 30s
+var Chore = require('./lib/chore');
+var chore = new Chore(swifton, '*/30');
+chore.start();
 
 module.exports = app;
