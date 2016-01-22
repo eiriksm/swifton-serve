@@ -2,6 +2,16 @@ var express = require('express');
 var router = express.Router();
 var Promise = require('bluebird');
 
+router.get('/oneclick', function (req, res, next) {
+  req.swifton.serve.createContainerForGitRepository(req.query.repository)
+  .then(function (result) {
+    res.status(302).redirect(result.service_uri);
+  })
+  .error(function (err) {
+    res.status(500).json(err);
+  });
+});
+
 router.get('/:containerId', function (req, res, next) {
   req.swifton.serve.getContainerById(req.params.containerId)
   .then(function (result) {
