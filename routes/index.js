@@ -5,7 +5,7 @@ var Promise = require('bluebird');
 router.get('/oneclick', function (req, res, next) {
   req.swifton.serve.createContainerForGitRepository(req.query.repository)
   .then(function (result) {
-    res.status(302).redirect(result.service_uri);
+    res.status(302).redirect('http://' + result.service_uri);
   })
   .error(function (err) {
     res.status(500).json(err);
