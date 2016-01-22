@@ -12,6 +12,19 @@ var routes = {
   index: require('./routes/index')
 };
 
+var swifton = {
+  db: {
+    serves: new(cradle.Connection)({
+      cache: false
+    }).database('swifton/serves')
+  },
+  docker: Promise.promisifyAll(new Docker())
+}
+
+var Chore = require('./lib/chore');
+var chore = new Chore(swifton);
+// chore.start();
+
 var app = express();
 
 app.use(logger('dev'));
@@ -22,14 +35,7 @@ app.disable('x-powered-by');
 // middlewares
 app.use(function (req, res, next) {
   if (typeof req.swifton === 'undefined') {
-    req.swifton = {
-      db: {
-        serves: new(cradle.Connection)({
-          cache: false
-        }).database('swifton/serves')
-      },
-      docker: Promise.promisifyAll(new Docker())
-    };
+    req.swifton = swifton;
   };
   next();
 });
@@ -57,5 +63,8 @@ app.use(function(err, req, res, next) {
   console.error(err.stack);
   res.sendStatus(err.status || 500);
 });
+
+// maintenance tasks
+
 
 module.exports = app;
