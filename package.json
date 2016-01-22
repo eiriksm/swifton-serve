@@ -20,6 +20,7 @@
     "newrelic": "^1.24.0",
     "raw-body": "^2.1.5",
     "serve-favicon": "~2.3.0",
-    "shortid": "^2.2.4"
+    "shortid": "^2.2.4",
+    "string-template": "^1.0.0"
   }
 }
