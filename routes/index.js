@@ -3,6 +3,7 @@ var router = express.Router();
 var getRawBody = require('raw-body');
 var shortid = require('shortid');
 var Promise = require('bluebird');
+var portfinder = Promise.promisifyAll(require('portfinder'));
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -15,130 +16,47 @@ function handleServe (req, res, next) {
   var repository = req.body.repository;
 
   var commands = [
-    '/bin/bash',
+    'bash',
     '-c',
     'git clone ' + repository + ' app && cd app && swift build --configuration release && cd .build/release && exe=$(grep -o \'name: "[^"]*"\' ../../Package.swift | sed \'s/name: "//g\' | sed \'s/"//g\') && ./$exe'
   ];
 
   var aContainer;
-  req.swifton.docker.createContainerAsync({
-    Image: 'swiftdocker/swift',
-    Cmd: commands
+  var aPort;
+
+  portfinder.getPortAsync()
+  .then(function (port) {
+    aPort = port;
+    return req.swifton.docker.createContainerAsync({
+      Image: 'swiftdocker/swift',
+      Cmd: commands,
+      Detach: true,
+      HostConfig: {
+        Privileged: true,
+        PortBindings: {
+          "8000/tcp": [{ "HostPort": aPort.toString() }]
+        }
+      },
+      ExposedPorts: {
+        "8000/tcp": {}
+      },
+      Tty: true
+    })
   })
   .then(function (container) {
     aContainer = Promise.promisifyAll(container);
-    return aContainer.startAsync({
-      Privileged: true
+    aContainer.attach({stream: true, stdout: true, stderr: true}, function (err, stream) {
+      stream.pipe(process.stdout);
     });
+    return aContainer.startAsync();
   })
   .then(function (data) {
     res.json({
       success: true,
+      port: aPort,
       container_id: aContainer.id
     });
   });
-
-  // req.swifton.docker.createContainer({
-  //   Image: 'swiftdocker/swift',
-  //   Cmd: commands
-  // }, function(err, container) {
-  //   container.attach({
-  //     stream: true,
-  //     stdout: true,
-  //     stderr: true,
-  //     tty: true
-  //   }, function(err, stream) {
-  //     if(err) {
-  //       console.log('err attach', err);
-  //       res.sendStatus(500);
-  //       return;
-  //     }
-  //     stream.pipe(process.stdout);
-  //
-  //     container.start({
-  //       Privileged: true
-  //     }, function(err, data) {
-  //       if(err) {
-  //         console.log('err start', err);
-  //         res.sendStatus(500);
-  //         return;
-  //       }
-  //       res.json({
-  //         success: true,
-  //         container_id: container.id
-  //       });
-  //     });
-  //   });
-  // });
-
-  // req.swifton.docker.createContainer({
-  //   Image: 'swiftdocker/swift',
-  // }, function (err, container) {
-  //   container.start({
-  //     Cmd: commands
-  //   }, function (err, data) {
-  //     console.log('exec \'in:', commands);
-  //     console.log('exec \'err:', err);
-  //     console.log('exec \'data:', data);
-  //
-  //     // container.exec({
-  //     //   // AttachStdin: true,
-  //     //   // AttachStdout: true,
-  //     //   Cmd: commands
-  //     // }, function (err, exec) {
-  //     //   console.log('exec err', err);
-  //     //   exec.start({
-  //     //     hijack: true,
-  //     //     stdin: true
-  //     //   }, function (err, stream) {
-  //     //     stream.pipe(process.stdout);
-  //     //     console.log('err', err);
-  //     //     // console.log('stream', stream);
-  //     //   });
-  //     // });
-  //   });
-  // });
-
-//   var theContainer = null;
-//   req.swifton.docker.createContainerAsync({
-    // Image: 'swiftdocker/swift',
-    // // Cmd: commands,
-    // HostConfig: {
-    //   PublishAllPorts: true,
-    //   Privileged: true
-    // }
-//   })
-//   .then(function (container) {
-//     console.log('CREATE CONTAINER:', container);
-//     theContainer = container;
-//     return Promise.promisifyAll(container).startAsync();
-//   })
-//   .then(function (exec) {
-//
-//     return Promise.promisifyAll(theContainer).execAsync({
-//       Cmd: commands,
-//       AttachStdin: true,
-//       AttachStdout: true
-//     });
-//   })
-//   .then(function (data) {
-//     console.log('CONTAINER EXEC:', data);
-//     // exec(commands, function (e,c) {
-//       // console.log('EXEC E:', e);
-//       // console.log('EXEC C:', c);
-//     // });
-//   })
-//   .error(function (err) {
-//     console.log('ERROR:', err);
-//   });
-// };
-//
-// function send (res, out, err) {
-//   console.log('send typeof out', typeof out);
-//   console.log('send out', out);
-//   console.log('send typeof err', typeof err);
-//   console.log('send err', err);
-//   res.send(out ? out : err);
 };
 
 function getFilename (req) {
