@@ -7,21 +7,27 @@ var bodyParser = require('body-parser');
 var Promise = require('bluebird');
 var cradle = Promise.promisifyAll(require('cradle'));
 var Docker = Promise.promisifyAll(require('dockerode'));
+var Chore = require('./lib/chore');
+var Serve = require('./lib/serve');
 
 var routes = {
   index: require('./routes/index')
 };
 
-var swifton = {
-  db: {
-    serves: new(cradle.Connection)({
-      cache: false
-    }).database('swifton/serves')
-  },
-  docker: Promise.promisifyAll(new Docker())
-}
+var database = {
+  serves: new(cradle.Connection)({
+    cache: false
+  }).database('swifton/serves')
+};
+var docker = Promise.promisifyAll(new Docker());
+var serve = new Serve(database, docker);
 
 var app = express();
+var swifton = {
+  db: database,
+  docker: docker,
+  serve: serve
+}
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -62,7 +68,6 @@ app.use(function(err, req, res, next) {
 
 // maintenance tasks
 // perform docker and couchdb cleanup every 30s
-var Chore = require('./lib/chore');
 var chore = new Chore(swifton, '*/30');
 chore.start();
 
