@@ -15,36 +15,71 @@ function handleServe (req, res, next) {
   var repository = req.body.repository;
 
   var commands = [
-    '/bin/bash -c git clone ' + repository + ' app && cd app && swift build --configuration release && cd .build/release && exe=$(grep -o \'name: "[^"]*"\' ../../Package.swift | sed \'s/name: "//g\' | sed \'s/"//g\') && ./$exe'
+    '/bin/bash',
+    '-c',
+    'git clone ' + repository + ' app && cd app && swift build --configuration release && cd .build/release && exe=$(grep -o \'name: "[^"]*"\' ../../Package.swift | sed \'s/name: "//g\' | sed \'s/"//g\') && ./$exe'
   ];
 
   req.swifton.docker.createContainer({
     Image: 'swiftdocker/swift',
-  }, function (err, container) {
-    container.start({
-      Cmd: commands
-    }, function (err, data) {
-      console.log('exec \'in:', commands);
-      console.log('exec \'err:', err);
-      console.log('exec \'data:', data);
+    Cmd: commands
+  }, function(err, container) {
+    container.attach({
+      stream: true,
+      stdout: true,
+      stderr: true,
+      tty: true
+    }, function(err, stream) {
+      if(err) {
+        console.log('err attach', err);
+        res.sendStatus(500);
+        return;
+      }
+      stream.pipe(process.stdout);
 
-      // container.exec({
-      //   // AttachStdin: true,
-      //   // AttachStdout: true,
-      //   Cmd: commands
-      // }, function (err, exec) {
-      //   console.log('exec err', err);
-      //   exec.start({
-      //     hijack: true,
-      //     stdin: true
-      //   }, function (err, stream) {
-      //     stream.pipe(process.stdout);
-      //     console.log('err', err);
-      //     // console.log('stream', stream);
-      //   });
-      // });
+      container.start({
+        Privileged: true
+      }, function(err, data) {
+        if(err) {
+          console.log('err start', err);
+          res.sendStatus(500);
+          return;
+        }
+        res.json({
+          success: true,
+          container_id: container.id
+        });
+      });
     });
   });
+
+  // req.swifton.docker.createContainer({
+  //   Image: 'swiftdocker/swift',
+  // }, function (err, container) {
+  //   container.start({
+  //     Cmd: commands
+  //   }, function (err, data) {
+  //     console.log('exec \'in:', commands);
+  //     console.log('exec \'err:', err);
+  //     console.log('exec \'data:', data);
+  //
+  //     // container.exec({
+  //     //   // AttachStdin: true,
+  //     //   // AttachStdout: true,
+  //     //   Cmd: commands
+  //     // }, function (err, exec) {
+  //     //   console.log('exec err', err);
+  //     //   exec.start({
+  //     //     hijack: true,
+  //     //     stdin: true
+  //     //   }, function (err, stream) {
+  //     //     stream.pipe(process.stdout);
+  //     //     console.log('err', err);
+  //     //     // console.log('stream', stream);
+  //     //   });
+  //     // });
+  //   });
+  // });
 
 //   var theContainer = null;
 //   req.swifton.docker.createContainerAsync({
