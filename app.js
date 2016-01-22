@@ -24,9 +24,9 @@ app.use(function (req, res, next) {
   if (typeof req.swifton === 'undefined') {
     req.swifton = {
       db: {
-        execlogs: new(cradle.Connection)({
+        serves: new(cradle.Connection)({
           cache: false
-        }).database('swifton/execlogs')
+        }).database('swifton/serves')
       },
       docker: Promise.promisifyAll(new Docker())
     };

@@ -9,7 +9,6 @@ var path = require('path');
 var exec = require('child_process').exec;
 
 router.post('/', function (req, res, next) {
-
   var repository = req.body.repository;
   var commands = [
     'bash',
@@ -18,8 +17,10 @@ router.post('/', function (req, res, next) {
   ];
 
   var aContainer;
+  var aContainerData;
   var aName;
   var aPort;
+
   return req.swifton.docker.createContainerAsync({
     Image: 'swiftdocker/swift',
     Cmd: commands,
@@ -46,8 +47,9 @@ router.post('/', function (req, res, next) {
     return aContainer.inspectAsync();
   })
   .then(function (data) {
+    aContainerData = data;
     aPort = data["NetworkSettings"]["Ports"]["8000/tcp"][0]["HostPort"];
-    aName = data["Name"].replace('/','').replace('_','-');
+    aName = aContainerData["Name"].replace('/','').replace('_','-');
     return createNginxConfig(aName, aPort);
   })
   .then(function (nginxConfig) {
@@ -59,15 +61,31 @@ router.post('/', function (req, res, next) {
   .then(function () {
     return execute('service nginx reload');
   })
-  .then(function (out, code) {
-    console.log('out', out);
-    console.log('code', code);
+  .then(function (stdout) {
+    return req.swifton.db.serves.saveAsync(aContainer.id, {
+      service_uri: aName + '.serve.swifton.me',
+      docker_container: aContainerData,
+      error: null
+    });
+  })
+  .then(function (docId) {
     res.json({
       success: true,
       container_id: aContainer.id,
       service_uri: aName + '.serve.swifton.me'
     });
-  });
+  })
+  .error(function (err) {
+    req.swifton.db.serves.saveAsync(aContainer.id ? aContainer.id : undefined, {
+      service_uri: null,
+      docker_container: null,
+      error: err
+    })
+    res.status(500).json({
+      success: false,
+      reason: err
+    });
+  })
 });
 
 var createNginxConfig = function createNginxConfig (name, port, callback) {
@@ -96,7 +114,7 @@ var execute = function execute(command){
   return new Promise(function (resolve, reject) {
     exec(command, function(error, stdout, stderr) {
       if (error) {
-        return reject(error);
+        return resolve(error);
       }
       resolve(stdout);
     });
