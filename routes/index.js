@@ -8,6 +8,18 @@ var fs = Promise.promisifyAll(require('fs'));
 var path = require('path');
 var exec = require('child_process').exec;
 
+router.get('/:containerId', function (req, res, next) {
+  req.swifton.db.serves.getAsync(req.params.containerId)
+  .then(function (document) {
+    res.json({
+      created_at: document.created_at,
+      deleted_at: document.deleted_at,
+      status: document.status,
+      service_uri: document.service_uri
+    })
+  });
+});
+
 router.post('/', function (req, res, next) {
   var repository = req.body.repository;
   var commands = [
