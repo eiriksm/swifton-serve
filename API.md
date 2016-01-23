@@ -63,7 +63,7 @@ Deploy an app by providing it's Git repository using URL query parameters.
 ### Deploy an App [GET]
 
 + Request
-  /oneclick?repository=https://github/com/SwiftOnMe/swifton-serve-example
+  /oneclick?repository=https://github.com/SwiftOnMe/swifton-serve-example
 
 + Response 302
   + Headers
