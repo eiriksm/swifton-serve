@@ -36,15 +36,7 @@ router.get('/:containerId', function (req, res, next) {
 router.get('/:containerId/logs', function (req, res, next) {
   req.swifton.serve.getContainerStdoutById(req.params.containerId)
   .then(function (stream) {
-    // stream.pipe(res);
-
-    stream.on('data', function(data) {
-      res.write(data);
-    });
-
-    stream.on('end', function() {
-      res.end();
-    });
+    stream.pipe(res);
   })
   .error(function (err) {
     res.sendStatus(500);
