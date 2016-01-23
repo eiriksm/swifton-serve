@@ -33,6 +33,24 @@ router.get('/:containerId', function (req, res, next) {
   });
 });
 
+router.get('/:containerId/logs', function (req, res, next) {
+  req.swifton.serve.getContainerStdoutById(req.params.containerId)
+  .then(function (stream) {
+    // stream.pipe(res);
+
+    stream.on('data', function(data) {
+      res.write(data);
+    });
+
+    stream.on('end', function() {
+      res.end();
+    });
+  })
+  .error(function (err) {
+    res.sendStatus(500);
+  });
+});
+
 router.post('/', function (req, res, next) {
   req.swifton.serve.createContainerForGitRepository(req.body.repository)
   .then(function (result) {
