@@ -50,6 +50,8 @@ Query information about a specific App, identified by its container Id.
 
 Query the Apps Stdout / Stderr logs and see what's going on.
 
+Please be advised that this API returns a continuous stream of data and that you'll need a client capable of handling streamed data if you want to see this output in realtime. The stream is kept alive as long as your App lives. If you App is terminated, you'll see the existing log but streaming will end.
+
 ### Query Logs [GET]
 
 + Response 200 (text/plain)
@@ -91,7 +93,7 @@ Unpacking objects:  96% (32/33)
 Unpacking objects: 100% (33/33)   
 Unpacking objects: 100% (33/33), done.
 Checking connectivity... done.
-Cloning https://github.com/kylef/Curassow.git
+Cloning https://github.com/SwiftOnMe/swifton-serve-example.git
 
 ## Delete App API [/:containerId]
 
