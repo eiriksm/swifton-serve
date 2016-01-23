@@ -33,6 +33,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.disable('x-powered-by');
+app.use(express.static(path.join(__dirname, 'public')));
 
 // middlewares
 app.use(function (req, res, next) {
