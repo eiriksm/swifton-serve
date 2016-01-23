@@ -60,7 +60,7 @@ Delete an App based on its container Id.
 
 Deploy an app by providing it's Git repository using URL query parameters.
 
-### Deploy App [GET]
+### Deploy an App [GET]
 
 + Request
   /oneclick?repository=https://github/com/SwiftOnMe/swifton-serve-example
