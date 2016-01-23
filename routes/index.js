@@ -8,7 +8,7 @@ router.get('/', function (req, res, next) {
   .then(function (html) {
     res.send(html);
   })
-  .error(function (err) {
+  .catch(function (err) {
     res.send(err);
   });
 });
@@ -18,7 +18,7 @@ router.get('/oneclick', function (req, res, next) {
   .then(function (result) {
     res.status(302).redirect('http://' + result.service_uri);
   })
-  .error(function (err) {
+  .catch(function (err) {
     res.status(500).json(err);
   });
 });
@@ -28,7 +28,7 @@ router.get('/:containerId', function (req, res, next) {
   .then(function (result) {
     res.json(result);
   })
-  .error(function (err) {
+  .catch(function (err) {
     res.sendStatus(500);
   });
 });
@@ -38,7 +38,7 @@ router.get('/:containerId/logs', function (req, res, next) {
   .then(function (stream) {
     stream.pipe(res);
   })
-  .error(function (err) {
+  .catch(function (err) {
     res.sendStatus(500);
   });
 });
@@ -48,7 +48,7 @@ router.post('/', function (req, res, next) {
   .then(function (result) {
     res.status(201).json(result);
   })
-  .error(function (err) {
+  .catch(function (err) {
     res.status(500).json(err);
   });
 });
@@ -58,7 +58,7 @@ router.delete('/:containerId', function (req, res, next) {
   .then(function () {
     res.sendStatus(200);
   })
-  .error(function (err) {
+  .catch(function (err) {
     res.sendStatus(500);
   });
 });

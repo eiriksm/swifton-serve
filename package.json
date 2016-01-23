@@ -21,6 +21,7 @@
     "morgan": "~1.6.1",
     "newrelic": "^1.24.0",
     "serve-favicon": "~2.3.0",
-    "string-template": "^1.0.0"
+    "string-template": "^1.0.0",
+    "validator": "^4.5.1"
   }
 }
