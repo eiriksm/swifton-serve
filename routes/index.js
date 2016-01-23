@@ -1,6 +1,17 @@
 var express = require('express');
 var router = express.Router();
 var Promise = require('bluebird');
+var blueprint = new (require('../lib/blueprint'))(false);
+
+router.get('/', function (req, res, next) {
+  blueprint.render()
+  .then(function (html) {
+    res.send(html);
+  })
+  .error(function (err) {
+    res.send(err);
+  });
+});
 
 router.get('/oneclick', function (req, res, next) {
   req.swifton.serve.createContainerForGitRepository(req.query.repository)
@@ -25,7 +36,7 @@ router.get('/:containerId', function (req, res, next) {
 router.post('/', function (req, res, next) {
   req.swifton.serve.createContainerForGitRepository(req.body.repository)
   .then(function (result) {
-    res.json(result);
+    res.status(201).json(result);
   })
   .error(function (err) {
     res.status(500).json(err);
