@@ -2,6 +2,8 @@ HOST: https://serve.swifton.me
 
 # Serve Swifton.me 🍸
 
+![Logo](/logo.png)
+
 The `Serve` API is used to create and query about Swift Apps running on this server.
 
 # Preamble
