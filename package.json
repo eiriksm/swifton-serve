@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "prestart": "npm install",
-    "start": "ENV=production PORT=3003 pm2 start bin/www --name=serve",
+    "start": "CONTAINER_ID=swifton-serve-docker_swift-2016-01-11-a ENV=production PORT=3003 pm2 start bin/www --name=serve",
     "stop": "pm2 stop serve"
   },
   "dependencies": {
