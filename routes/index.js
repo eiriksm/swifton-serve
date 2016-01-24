@@ -20,7 +20,7 @@ router.get('/oneclick', function (req, res, next) {
       'http://',
       result.service_uri,
       '#',
-      container_id
+      result.container_id
     ].join(''));
   })
   .catch(function (err) {
