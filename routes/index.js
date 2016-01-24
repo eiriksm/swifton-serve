@@ -14,7 +14,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/oneclick', function (req, res, next) {
-  req.swifton.serve.createContainerForGitRep + '#' + container_idository(req.query.repository)
+  req.swifton.serve.createContainerForGitRepository(req.query.repository)
   .then(function (result) {
     res.status(302).redirect([
       'http://',
