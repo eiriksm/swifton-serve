@@ -19,6 +19,10 @@ As you've obviously reached us via `GET` you know how to read the documentation.
 
 Go on for some in-depth information on how to create containers.
 
+**Important information about your App's container Id**
+
+Please store your App's container Id carefully and do not share this information with anybody. Anybody in possession of this container Id can access your App's log files, other private information or even delete it.
+
 ### Deploy an App [POST]
 
 + Request (application/json)
