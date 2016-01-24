@@ -29,6 +29,7 @@ var swifton = {
   serve: serve
 }
 
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(cookieParser());
