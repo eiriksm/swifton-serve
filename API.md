@@ -109,10 +109,14 @@ Delete an App based on its container Id.
 
 Deploy an app by providing it's Git repository using URL query parameters.
 
+When using One-click deployment, your App's container Id is appended to the the Header `Location` field thus being shown in your browser's address bar. **DO NOT SHARE THIS URI WITH OTHERS.** Everybody in charge of your container Id can delete the App.
+
+Please store the container Id in a secret place as it's the only way for you to access your App's logs as well as to delete it.
+
 ### Deploy an App [GET]
 
 + Request
-  /oneclick?repository=https://github.com/SwiftOnMe/swifton-serve-example
+  /oneclick?repository=https://github.com/SwiftOnMe/swifton-serve-example#cf556a614953fb48c9aa1bae47499132bd91b0eeaea42f356fd219f0248c7c3c
 
 + Response 302
   + Headers
