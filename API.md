@@ -16,7 +16,7 @@ This service and api is provided as-is, no one takes any responsibility for what
 
 ## App TLS certificates
 
-All Swifton.me services are powered by [Let' Encrypt](letsencrypt.org) certificates where feasible. As Let's Encrypt are currently not issuing wildcard certificates, all Apps (`*.serve.swifton.me`) are being issued with a self signed certificate.
+All Swifton.me services are powered by [Let' Encrypt](letsencrypt.org) certificates where feasible. As Let's Encrypt are currently not issuing wildcard certificates, all Apps (`*.serve.swifton.me`) are being issued with a self signed certificate. SSL is currently not enforced but **highly** recommended when communicating using `*.serve.swifton.me`.
 
 ## Root certificate
 
