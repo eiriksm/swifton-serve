@@ -42,3 +42,6 @@ newrelic.js
 
 # Nginx Vhosts
 vhosts/*.conf
+
+# rootCA
+rootCA/*

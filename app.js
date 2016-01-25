@@ -44,6 +44,9 @@ app.use(function (req, res, next) {
   next();
 });
 
+// rootCA middleware
+app.use('/certificate.pem', require('./middleware/ca'));
+
 app.use('/', routes.index);
 
 // catch 404 and forward to error handler
