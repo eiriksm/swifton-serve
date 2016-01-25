@@ -170,8 +170,8 @@ Please store the container Id in a secret place as it's the only way for you to 
 ### Deploy an App [GET]
 
 + Request
-  /oneclick?repository=https://github.com/SwiftOnMe/swifton-serve-example#cf556a614953fb48c9aa1bae47499132bd91b0eeaea42f356fd219f0248c7c3c
+  GET /oneclick?repository=https://github.com/SwiftOnMe/swifton-serve-example
 
 + Response 302
   + Headers
-    Location: http://furious-tesla.serve.swifton.me
+    Location: http://furious-tesla.serve.swifton.me#cf556a614953fb48c9aa1bae47499132bd91b0eeaea42f356fd219f0248c7c3c
