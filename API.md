@@ -12,9 +12,57 @@ This service and api is provided as-is, no one takes any responsibility for what
 
 **Currently no authentication is needed to deploy Apps, this will change in the future. Until then Apps will most likely be shut down at any time. (When it seems like they're exhausting the system.)**
 
-# Group App management
+# Group Encryption and certificates
 
-## Serve API Root [/ ]
+## App TLS certificates
+
+All Swifton.me services are powered by [Let' Encrypt](letsencrypt.org) certificates where feasible. As Let's Encrypt are currently not issuing wildcard certificates, all Apps (`*.serve.swifton.me`) are being issued with a self signed certificate.
+
+## Root certificate
+
+You may download the root certificate here: [https://serve.swifton.me/certificate.pem](https://serve.swifton.me/certificate.pem). Using this root certificate you can ensure you're always talking to an legitimate Swifton.me App. Installing root certificates varies slightly from operating system to operating system.
+
+# Group Command-line interface
+
+## Prerequisites
+
+As our CLI is based on [Node.js](https://nodejs.org), it's necessary to have a running node environment set up. In case you've never worked with node before we'd highly recommend you to [read the instructions here](https://github.com/creationix/nvm) and set up [NVM](https://github.com/creationix/nvm) to manage your node.
+
+## Installation
+
+Using NVM install Swifton.me CLI as follows:
+
+```
+npm install -g swifton
+```
+
+## Usage
+
+Invoke `swifton` to see it's help menu:
+
+```
+$ swifton
+Usage: swifton [options] <keywords>
+
+
+Commands:
+
+  deploy [git-url]       Deploy a Git Repository on serve.swifton.me
+  delete [container-id]  Deletes an App on serve.swifton.me
+  logs [container-id]    Shows your App's logs (in real time)
+  status [container-id]  Query status information about your App
+
+Options:
+
+  -h, --help     output usage information
+  -V, --version  output the version number
+```
+
+As you can see, it's right now possible to deploy, delete, see logs and the status of your App.
+
+# Group RESTful services
+
+## Deploy an app [/ ]
 
 The root endpoint is used to serve the documentation when as well as to create new containers.
 As you've obviously reached us via `GET` you know how to read the documentation. Congratulations 🎉.
