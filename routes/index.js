@@ -14,7 +14,10 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/oneclick', function (req, res, next) {
-  req.swifton.serve.createContainerForGitRepository(req.query.repository)
+  req.swifton.serve.createContainerForGitRepository({
+    repository: req.query.repository,
+    configuration: req.query.configuration
+  })
   .then(function (result) {
     res.status(302).redirect([
       'http://',
@@ -49,7 +52,10 @@ router.get('/:containerId/logs', function (req, res, next) {
 });
 
 router.post('/', function (req, res, next) {
-  req.swifton.serve.createContainerForGitRepository(req.body.repository)
+  req.swifton.serve.createContainerForGitRepository({
+    repository: req.body.repository,
+    configuration: req.body.configuration
+  })
   .then(function (result) {
     res.status(201).json(result);
   })

@@ -62,7 +62,7 @@ As you can see, it's right now possible to deploy, delete, see logs and the stat
 
 # Group RESTful services
 
-## Deploy an app [/ ]
+## Deploy an App [/ ]
 
 The root endpoint is used to serve the documentation when as well as to create new containers.
 As you've obviously reached us via `GET` you know how to read the documentation. Congratulations 🎉.
@@ -75,9 +75,12 @@ Please store your App's container Id carefully and do not share this information
 
 ### Deploy an App [POST]
 
+The `configuration` attribute is optional and will default to `debug` if omitted.
+
 + Request (application/json)
 {
-  repository: "https://github.com/SwiftOnMe/swifton-serve-example"
+  repository: "https://github.com/SwiftOnMe/swifton-serve-example",
+  configuration: "debug"
 }
 
 + Response 201 (application/json)
@@ -169,8 +172,10 @@ Please store the container Id in a secret place as it's the only way for you to 
 
 ### Deploy an App [GET]
 
+The `configuration` attribute is optional and will default to `debug` if omitted.
+
 + Request
-  GET /oneclick?repository=https://github.com/SwiftOnMe/swifton-serve-example
+  GET /oneclick?repository=https://github.com/SwiftOnMe/swifton-serve-example&configuration=debug
 
 + Response 302
   + Headers
