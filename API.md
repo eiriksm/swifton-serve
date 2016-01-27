@@ -76,11 +76,13 @@ Please store your App's container Id carefully and do not share this information
 ### Deploy an App [POST]
 
 The `configuration` attribute is optional and will default to `debug` if omitted.
+The `service_uri` attribute is optional and will be a random `String` if omitted.
 
 + Request (application/json)
 {
   repository: "https://github.com/SwiftOnMe/swifton-serve-example",
-  configuration: "debug"
+  configuration: "debug",
+  service_uri: 'furious-tesla'
 }
 
 + Response 201 (application/json)
@@ -173,9 +175,10 @@ Please store the container Id in a secret place as it's the only way for you to 
 ### Deploy an App [GET]
 
 The `configuration` attribute is optional and will default to `debug` if omitted.
+The `service_uri` attribute is optional and will be a random `String` if omitted.
 
 + Request
-  GET /oneclick?repository=https://github.com/SwiftOnMe/swifton-serve-example&configuration=debug
+  GET /oneclick?repository=https://github.com/SwiftOnMe/swifton-serve-example&configuration=debug&service_uri=furious-tesla
 
 + Response 302
   + Headers
