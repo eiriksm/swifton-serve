@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 var Promise = require('bluebird');
 var cradle = Promise.promisifyAll(require('cradle'));
 var Docker = Promise.promisifyAll(require('dockerode'));
-var Chore = require('./lib/chore');
 var Serve = require('./lib/serve');
 
 var routes = {
@@ -62,10 +61,5 @@ app.use(function(err, req, res, next) {
   console.error(err.stack);
   res.sendStatus(err.status || 500);
 });
-
-// maintenance tasks
-// perform docker and couchdb cleanup every 30s
-var chore = new Chore(swifton, '*/30');
-chore.start();
 
 module.exports = app;
