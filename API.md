@@ -22,6 +22,12 @@ All Swifton.me services are powered by [Let' Encrypt](letsencrypt.org) certifica
 
 You may download the root certificate here: [https://serve.swifton.me/certificate.pem](https://serve.swifton.me/certificate.pem). Using this root certificate you can ensure you're always talking to an legitimate Swifton.me App. Installing root certificates varies slightly from operating system to operating system.
 
+## App lifespan / expiry
+
+Any app deployed will live for a maximum of **5 days** (if not deleted earlier by you). After the maximum lifespan it will be collected by the garbage collector (aka. dustman) and killed forever. This policy will be effective during the beta phase but *might* be extended.
+
+In the future it will be possible to deploy apps with no expiry as well as expiring apps.
+
 # Group Command-line interface
 
 ## Prerequisites
