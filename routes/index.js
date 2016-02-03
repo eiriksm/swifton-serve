@@ -14,18 +14,31 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/oneclick', function (req, res, next) {
-  req.swifton.serve.createContainerForGitRepository({
-    repository: req.query.repository,
-    configuration: req.query.configuration,
-    service_uri: req.query.service_uri
-  })
-  .then(function (result) {
-    res.status(302).redirect([
-      'http://',
-      result.service_uri,
-      '#',
-      result.container_id
-    ].join(''));
+  req.swifton.serve.shouldSpawnContainer(25)
+  .then(function (spawn) {
+    if (!spawn) {
+      return res.status(503).json({
+        sucess: false,
+        reason: 'max_limit_reached'
+      });
+    }
+    return req.swifton.serve.createContainerForGitRepository({
+      repository: req.query.repository,
+      configuration: req.query.configuration,
+      service_uri: req.query.service_uri
+    })
+    .then(function (result) {
+      console.log('result', result);
+      res.status(302).redirect([
+        'http://',
+        result.service_uri,
+        '#',
+        result.container_id
+      ].join(''));
+    })
+    .catch(function (err) {
+      res.status(500).json(err);
+    });
   })
   .catch(function (err) {
     res.status(500).json(err);
