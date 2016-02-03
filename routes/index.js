@@ -14,7 +14,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/oneclick', function (req, res, next) {
-  req.swifton.serve.shouldSpawnContainer(25)
+  req.swifton.serve.shouldSpawnContainer(75)
   .then(function (spawn) {
     if (!spawn) {
       return res.status(503).json({

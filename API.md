@@ -28,7 +28,7 @@ Any app deployed will live for a maximum of **1 day** (if not deleted earlier by
 
 In the future it will be possible to deploy apps with no expiry as well as expiring apps.
 
-There's also a limit of how many containers can be run on this system at the moment. This is constrained both by resources on this system as well as by hard-limits. Right now this limit is set to **25 containers**. This is not on a per-user but per-node basis.
+There's also a limit of how many containers can be run on this system at the moment. This is constrained both by resources on this system as well as by hard-limits. Right now this limit is set to **75 containers**. This is not on a per-user but per-node basis.
 
 # Group Command-line interface
 
