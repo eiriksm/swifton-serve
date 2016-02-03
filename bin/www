@@ -5,6 +5,7 @@
 **/
 if (require('fs').existsSync(__dirname + '/../newrelic.js')) {
   require('newrelic');
+  console.log('New Relic loaded.');
 }
 
 /**
