@@ -1,10 +1,10 @@
 {
   "name": "serve",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "prestart": "npm install",
-    "start": "DOCKER_IMAGE_ID=swifton-serve-docker_swift-2016-01-11-a-2 ENV=production PORT=3003 pm2 start bin/www --name=serve",
+    "start": "DOCKER_IMAGE_ID=swifton-serve-docker_swift-2016-01-11-a-3 ENV=production PORT=3003 pm2 start bin/www --name=serve",
     "stop": "pm2 stop serve"
   },
   "dependencies": {
