@@ -25,7 +25,8 @@ router.get('/oneclick', function (req, res, next) {
     return req.swifton.serve.createContainerForGitRepository({
       repository: req.query.repository,
       configuration: req.query.configuration,
-      service_uri: req.query.service_uri
+      service_uri: req.query.service_uri,
+      ttl: req.query.ttl
     })
     .then(function (result) {
       console.log('result', result);
@@ -69,7 +70,8 @@ router.post('/', function (req, res, next) {
   req.swifton.serve.createContainerForGitRepository({
     repository: req.body.repository,
     configuration: req.body.configuration,
-    service_uri: req.body.service_uri
+    service_uri: req.body.service_uri,
+    ttl: req.body.ttl
   })
   .then(function (result) {
     res.status(201).json(result);
