@@ -22,11 +22,11 @@ All Swifton.me services are powered by [Let' Encrypt](letsencrypt.org) certifica
 
 You may download the root certificate here: [https://serve.swifton.me/certificate.pem](https://serve.swifton.me/certificate.pem). Using this root certificate you can ensure you're always talking to an legitimate Swifton.me App. Installing root certificates varies slightly from operating system to operating system.
 
-## App lifespan / expiry
+## App time-to-live / expiry
 
 Any app deployed will live for a maximum of **1 day** (if not deleted earlier by you). After the maximum lifespan it will be collected by the garbage collector (aka. dustman) and killed forever. This policy will be effective during the beta phase but *might* be extended.
 
-In the future it will be possible to deploy apps with no expiry as well as expiring apps.
+Optionally it's also feasible to provide a `ttl` attribute in *milliseconds*, the garbage collector will ***try*** to not collect the container before the time-to-live has been reached.
 
 There's also a limit of how many containers can be run on this system at the moment. This is constrained both by resources on this system as well as by hard-limits. Right now this limit is set to **75 containers**. This is not on a per-user but per-node basis.
 
@@ -85,6 +85,7 @@ Please store your App's container Id carefully and do not share this information
 
 The `configuration` attribute is optional and will default to `debug` if omitted.
 The `service_uri` attribute is optional and will be a random `String` if omitted.
+The `ttl` attribute is optional and will be set to `86.400.000` (1 day in milliseconds) if omitted.
 
 + Request (application/json)
 {
@@ -184,6 +185,7 @@ Please store the container Id in a secret place as it's the only way for you to 
 
 The `configuration` attribute is optional and will default to `debug` if omitted.
 The `service_uri` attribute is optional and will be a random `String` if omitted.
+The `ttl` attribute is optional and will be set to `86.400.000` (1 day in milliseconds) if omitted.
 
 + Request
   GET /oneclick?repository=https://github.com/SwiftOnMe/swifton-serve-example&configuration=debug&service_uri=furious-tesla
