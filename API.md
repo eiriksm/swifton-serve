@@ -111,7 +111,8 @@ Query information about a specific App, identified by its container Id.
 {
   created_at: "2016-01-22T23:05:22.740Z",
   status: "running",
-  service_uri: "furious-tesla.serve.swifton.me"
+  service_uri: "furious-tesla.serve.swifton.me",
+  ttl: 86400000
 }
 
 ## App Logs API [/:containerId/logs]
